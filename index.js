@@ -321,16 +321,17 @@ function farmManagerNames() {
 // 5 Arreglo ordenado decrecientemente con los m2 totales de cada campo que tengan
 // más de 2 hectáreas en Paltos
 function biggestAvocadoFarms() {
-  const minHectares = 2;
-  const hectaresToM2s = 10_000;
-  const requiredMinM2s = minHectares * hectaresToM2s;
+  const PALTOS_NAME = "PALTOS";
+  const MIN_REQUIRED_HECTARES = 2;
+  const HECTARES_TO_M2S = 10_000;
+  const MIN_REQUIRED_M2S = MIN_REQUIRED_HECTARES * HECTARES_TO_M2S;
 
   // So we do not iterate all the array when the remaining total area
   // cannot reach the min required m2s of palto hectares
   const sortedPaddocksByArea = [...paddocks].sort(
     (paddockA, paddockB) => paddockB.area - paddockA.area
   );
-  const { id: paltosTypeId } = paddockType.find((p) => p.name === "PALTOS");
+  const { id: paltosTypeId } = paddockType.find((p) => p.name === PALTOS_NAME);
 
   const totalM2sByFarm = [];
 
@@ -339,7 +340,7 @@ function biggestAvocadoFarms() {
     let totalArea = 0;
     let totalAreaOfPaltos = 0;
     let remainingPaddocks = 0;
-    let farmHasMoreThan2HectaresOfPaltos = true;
+    let farmHasTheMinRequiredM2sOfPaltos = true;
 
     for (const [
       index,
@@ -358,16 +359,16 @@ function biggestAvocadoFarms() {
       const maxPossibleRemainingAreaOfPaltos = paddockArea * remainingPaddocks;
       const maxPossibleAreaOfPaltos =
         totalAreaOfPaltos + maxPossibleRemainingAreaOfPaltos;
-      const canReachTheMinRequiredM2sOfPaltos =
-        maxPossibleAreaOfPaltos < requiredMinM2s;
+      const canReachTheMinRequiredM2SOfPaltos =
+        maxPossibleAreaOfPaltos < MIN_REQUIRED_M2S;
 
-      if (canReachTheMinRequiredM2sOfPaltos) {
-        farmHasMoreThan2HectaresOfPaltos = false;
+      if (canReachTheMinRequiredM2SOfPaltos) {
+        farmHasTheMinRequiredM2sOfPaltos = false;
         break;
       }
     }
 
-    if (farmHasMoreThan2HectaresOfPaltos) {
+    if (farmHasTheMinRequiredM2sOfPaltos) {
       totalM2sByFarm.push(totalArea);
     }
   });
